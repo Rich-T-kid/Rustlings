@@ -27,7 +27,25 @@ mod my_module {
     use super::Command;
 
     // TODO: Complete the function as described above.
-    // pub fn transformer(input: ???) -> ??? { ??? }
+    //pub fn transformer(input: ???) -> ??? { ??? }
+    pub fn transformer<'a>(input: Vec<(String,Command)>) -> Vec<String> {
+        let mut result = Vec::new();
+        for (str,cmd) in input.iter(){
+            let new_str = match *cmd{
+                Command::Uppercase => str.to_uppercase(),
+                Command::Trim => str.trim().to_string(),
+                Command::Append(n) => {
+                    let mut temp_str = str.clone();
+                    for _i in 0..n{
+                        temp_str.push_str("bar");
+                    }
+                    temp_str
+                }
+            };
+            result.push(new_str)
+        }
+        result
+    }
 }
 
 fn main() {
@@ -39,7 +57,7 @@ mod tests {
     // TODO: What do we need to import to have `transformer` in scope?
     // use ???;
     use super::Command;
-
+    use super::my_module::transformer;
     #[test]
     fn it_works() {
         let input = vec![

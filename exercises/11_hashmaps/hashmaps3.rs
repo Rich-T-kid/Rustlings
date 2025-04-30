@@ -6,13 +6,25 @@
 // number of goals the team scored, and the total number of goals the team
 // conceded.
 
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash};
 
 // A structure to store the goal details of a team.
 #[derive(Default)]
 struct TeamScores {
     goals_scored: u8,
     goals_conceded: u8,
+}
+fn update_score<'a>(scores: &mut HashMap<&'a str,TeamScores>,team1:&'a str,team2:&'a str,t1_score:u8,t2_score:u8){
+    // grab current stats for both teams assume they dont exist
+    let team1Stats = scores.entry(&team1).or_insert(TeamScores{goals_conceded:0,goals_scored:0});
+    // Update scores for team 1
+    team1Stats.goals_conceded += t2_score;
+    team1Stats.goals_scored += t1_score;
+    let  team2Stats = scores.entry(&team2).or_insert(TeamScores{goals_conceded:0,goals_scored:0});
+
+    // update scores for team 2
+    team2Stats.goals_conceded += t1_score;
+    team2Stats.goals_scored += t2_score;
 }
 
 fn build_scores_table(results: &str) -> HashMap<&str, TeamScores> {
@@ -26,9 +38,10 @@ fn build_scores_table(results: &str) -> HashMap<&str, TeamScores> {
         let team_2_name = split_iterator.next().unwrap();
         let team_1_score: u8 = split_iterator.next().unwrap().parse().unwrap();
         let team_2_score: u8 = split_iterator.next().unwrap().parse().unwrap();
-
+        println!("{}, {} , {} , {}",team_1_name,team_2_name,team_1_score,team_2_score);
+        update_score(&mut scores, team_1_name, team_2_name, team_1_score, team_2_score);
         // TODO: Populate the scores table with the extracted details.
-        // Keep in mind that goals scored by team 1 will be the number of goals
+        // Keep in mind that goals scored by team 1 will be the number of goalsx
         // conceded by team 2. Similarly, goals scored by team 2 will be the
         // number of goals conceded by team 1.
     }
